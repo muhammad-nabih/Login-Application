@@ -7,24 +7,27 @@ import UpdateProfile from "./components/UpdateProfile";
 import ForgotPassword from "./components/ForgotPassword";
 import SignUp from "./components/SignUp";
 import LogIn from "./components/LogIn";
+import { AuthProvider } from "./context/AuthContext";
 
-interface Props { }
+interface Props {}
 
 const App: React.FC<Props> = () => {
   return (
     <Container className="d-flex justify-content-center align-items-center vh-100  ">
-      <div className="w-100 p-4 rounded bg-light" style={{ maxWidth: "400px" }}>
-        <BrowserRouter>
-          <Routes>
-            <Route path="/signup" element={<SignUp />} />
-            <Route path="/login" element={<LogIn />} />
-            <Route path="/forgot-password" element={<ForgotPassword />} />
-            <Route path="/update-profile" element={<UpdateProfile />} />
-            <Route path="/" element={<Dashboard />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-      </div>
+      <AuthProvider>
+        <div className="w-100 p-4 rounded bg-light" style={{ maxWidth: "90%" }}>
+          <BrowserRouter>
+            <Routes>
+              <Route path="/signup" element={<SignUp />} />
+              <Route path="/login" element={<LogIn />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
+              <Route path="/update-profile" element={<UpdateProfile />} />
+              <Route path="/" element={<Dashboard />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
+        </div>
+      </AuthProvider>
     </Container>
   );
 };
