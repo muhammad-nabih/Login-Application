@@ -8,6 +8,7 @@ import ForgotPassword from "./components/ForgotPassword";
 import SignUp from "./components/SignUp";
 import LogIn from "./components/LogIn";
 import { AuthProvider } from "./context/AuthContext";
+import RequireAuth from "./context/RequireAuth";
 
 interface Props {}
 
@@ -22,7 +23,16 @@ const App: React.FC<Props> = () => {
               <Route path="/login" element={<LogIn />} />
               <Route path="/forgot-password" element={<ForgotPassword />} />
               <Route path="/update-profile" element={<UpdateProfile />} />
-              <Route path="/" element={<Dashboard />} />
+
+              <Route
+                path="/"
+                element={
+                  <RequireAuth>
+                    <Dashboard />{" "}
+                  </RequireAuth>
+                }
+              />
+
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>

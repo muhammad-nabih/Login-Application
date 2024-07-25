@@ -6,12 +6,22 @@ import {
   User as FirebaseUser,
   UserCredential,
   signOut,
+  signInWithEmailAndPassword,
+  sendPasswordResetEmail,
+  updateEmail,
+  updatePassword,
+  sendEmailVerification,
 } from "firebase/auth";
 
 interface AuthContextType {
   currentUser: FirebaseUser | null;
   signup: (email: string, password: string) => Promise<UserCredential>;
+  login: (email: string, password: string) => Promise<UserCredential>;
+  generatePasswordResetLink: (email: string) => Promise<void>;
   logout: () => Promise<void>;
+  updateUserEmail: (email: string) => Promise<void>;
+  updateUserPassword: (password: string) => Promise<void>;
+  sendVerificationEmail: (email: string) => Promise<void>;
   isAuthenticated: boolean;
   setIsAuthenticated: React.Dispatch<React.SetStateAction<boolean>>;
 }
@@ -27,8 +37,37 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const signup = (email: string, password: string): Promise<UserCredential> =>
     createUserWithEmailAndPassword(auth, email, password);
 
-  const logout =  () => {
+  const logout = () => {
     return signOut(auth);
+  };
+
+  const login = (email: string, password: string) => {
+    return signInWithEmailAndPassword(auth, email, password);
+  };
+
+  const updateUserEmail = (email: string) => {
+    if (auth.currentUser) {
+      return updateEmail(auth.currentUser, email);
+    }
+    throw new Error("No user is currently signed in");
+  };
+
+  const updateUserPassword = (password: string) => {
+    if (auth.currentUser) {
+      return updatePassword(auth.currentUser, password);
+    }
+    throw new Error("No user is currently signed in");
+  };
+
+  const sendVerificationEmail = (email: string) => {
+    if (auth.currentUser) {
+      return sendEmailVerification(auth.currentUser);
+    }
+    throw new Error("No user is currently signed in");
+  };
+
+  const generatePasswordResetLink = (email: string) => {
+    return sendPasswordResetEmail(auth, email);
   };
 
   useEffect(() => {
@@ -47,9 +86,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         isAuthenticated,
         setIsAuthenticated,
         logout,
+        login,
+        generatePasswordResetLink,
+        updateUserEmail,
+        updateUserPassword,
+        sendVerificationEmail,
       }}
     >
-      {!isAuthenticated && children}
+      {children}
     </AuthContext.Provider>
   );
 };
